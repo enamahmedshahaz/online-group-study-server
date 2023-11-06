@@ -46,6 +46,14 @@ async function run() {
             res.send(result);
         });
 
+        //API to get a single Assignment based on _Id
+        app.get("/assignments/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await assignmentCollection.findOne(query);
+            res.send(result);
+        });
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
