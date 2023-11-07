@@ -119,6 +119,27 @@ async function run() {
             res.send(result);
         });
 
+        //api to update a assignment submission
+        app.patch('/submissions/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const updatedSubmission = req.body;
+
+            console.log(updatedSubmission);
+
+            const updateDoc = {
+                $set: {
+                    givenMark: updatedSubmission.givenMark,
+                    feedback: updatedSubmission.feedback,
+                    status: updatedSubmission.status
+                },
+            };
+
+            const result = await submissionCollection.updateOne(filter, updateDoc);
+
+            res.send(result);
+        })
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
