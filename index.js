@@ -89,11 +89,33 @@ async function run() {
             res.send(result);
         });
 
-         //API to add a new assignment submission
-         app.post("/submissions", async (req, res) => {
+        //API to add a new assignment submission
+        app.post("/submissions", async (req, res) => {
             const newSubmissionItem = req.body;
             console.log('New submission -> ', newSubmissionItem);
             const result = await submissionCollection.insertOne(newSubmissionItem);
+            res.send(result);
+        });
+
+        //API to view assignment submissions based on query
+        app.get("/submissions", async (req, res) => {
+
+            console.log('query param email value:', req.query.email);
+
+            let query = {};
+
+            if (req.query?.email) {
+                // only find assignments submitted by other users with pending status
+                query = {
+                    $and: [
+                        { submitted_by: { $ne: req.query.email } },
+                        { status: "pending" }
+                    ]
+                }
+            }
+
+            const result = await submissionCollection.find(query).toArray();
+
             res.send(result);
         });
 
@@ -107,6 +129,7 @@ async function run() {
         // await client.close();
     }
 }
+
 run().catch(console.dir);
 
 
