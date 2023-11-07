@@ -29,6 +29,8 @@ async function run() {
 
         const database = client.db("onlineGroupStudyDB");
         const assignmentCollection = database.collection("assignments");
+        const submissionCollection = database.collection("submissions");
+
 
         //API to add a new assignment
         app.post("/assignments", async (req, res) => {
@@ -51,6 +53,47 @@ async function run() {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await assignmentCollection.findOne(query);
+            res.send(result);
+        });
+
+        //API to update a single Assignment based on _Id
+        app.put("/assignments/:id", async (req, res) => {
+
+            const id = req.params.id;
+            const assignment = req.body;
+
+            // Create a filter for the document with the id 
+            const filter = { _id: new ObjectId(id) };
+
+            /* Set the upsert option to insert a document 
+            if no documents match the filter */
+
+            /* if set to false : If no documents match the filter criteria,
+             the method does not perform any update operation  */
+            const options = { upsert: true };
+
+            // Specify the updated values for the fields 
+            const updatingAssignment = {
+                $set: {
+                    title: assignment.title,
+                    difficultyLevel: assignment.difficultyLevel,
+                    dueDate: assignment.dueDate,
+                    thumbnail: assignment.thumbnail,
+                    marks: assignment.marks,
+                    description: assignment.description
+                },
+            };
+
+            // Update the first document that matches the filter
+            const result = await assignmentCollection.updateOne(filter, updatingAssignment, options);
+            res.send(result);
+        });
+
+         //API to add a new assignment submission
+         app.post("/submissions", async (req, res) => {
+            const newSubmissionItem = req.body;
+            console.log('New submission -> ', newSubmissionItem);
+            const result = await submissionCollection.insertOne(newSubmissionItem);
             res.send(result);
         });
 
