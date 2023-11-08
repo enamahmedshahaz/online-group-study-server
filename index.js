@@ -43,8 +43,17 @@ async function run() {
 
         //API to get all Assignments
         app.get("/assignments", async (req, res) => {
-            const cursor = assignmentCollection.find();
+
+            console.log(req.query.level);
+            let query = {};
+            if (req.query?.level) {
+                query = { difficultyLevel: req.query.level }
+            }
+            const cursor = assignmentCollection.find(query);
             const result = await cursor.toArray();
+
+            // const cursor = assignmentCollection.find();
+
             res.send(result);
         });
 
@@ -64,7 +73,7 @@ async function run() {
             res.send(result);
         });
 
-        
+
         //API to update a single Assignment based on _Id
         app.put("/assignments/:id", async (req, res) => {
 
