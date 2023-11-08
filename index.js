@@ -56,6 +56,15 @@ async function run() {
             res.send(result);
         });
 
+        //API to delete a single Assignment based on _Id
+        app.delete("/assignments/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await assignmentCollection.deleteOne(query);
+            res.send(result);
+        });
+
+        
         //API to update a single Assignment based on _Id
         app.put("/assignments/:id", async (req, res) => {
 
