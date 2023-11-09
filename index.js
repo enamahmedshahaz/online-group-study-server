@@ -49,13 +49,30 @@ async function run() {
             if (req.query?.level) {
                 query = { difficultyLevel: req.query.level }
             }
-            const cursor = assignmentCollection.find(query);
+
+            const page = parseInt(req.query.page);
+            const size = parseInt(req.query.size);
+
+            const cursor = assignmentCollection.find(query)
+            .skip(page * size)
+            .limit(size);
+
             const result = await cursor.toArray();
 
             // const cursor = assignmentCollection.find();
 
             res.send(result);
         });
+
+        //API to count assignment based on level filter
+        app.get('/assignmentCount', async (req, res) => {
+            let query = {};
+            if (req.query?.level) {
+                query = { difficultyLevel: req.query?.level};
+            }
+            const count = await assignmentCollection.countDocuments(query);
+            res.send({ count });
+          });
 
         //API to get a single Assignment based on _Id
         app.get("/assignments/:id", async (req, res) => {
