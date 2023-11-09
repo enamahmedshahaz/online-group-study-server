@@ -35,7 +35,7 @@ async function run() {
         //API to add a new assignment
         app.post("/assignments", async (req, res) => {
             const newItem = req.body;
-            console.log('New Assignment -> ', newItem);
+            //console.log('New Assignment -> ', newItem);
             const result = await assignmentCollection.insertOne(newItem);
             res.send(result);
         });
@@ -44,7 +44,6 @@ async function run() {
         //API to get all Assignments
         app.get("/assignments", async (req, res) => {
 
-            console.log(req.query.level);
             let query = {};
             if (req.query?.level) {
                 query = { difficultyLevel: req.query.level }
@@ -127,15 +126,13 @@ async function run() {
         //API to add a new assignment submission
         app.post("/submissions", async (req, res) => {
             const newSubmissionItem = req.body;
-            console.log('New submission -> ', newSubmissionItem);
+            //console.log('New submission -> ', newSubmissionItem);
             const result = await submissionCollection.insertOne(newSubmissionItem);
             res.send(result);
         });
 
         //API to view assignment submissions based on query
         app.get("/submissions", async (req, res) => {
-
-            console.log('query param email value:', req.query.email);
 
             let query = {};
 
@@ -159,8 +156,6 @@ async function run() {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) };
             const updatedSubmission = req.body;
-
-            console.log(updatedSubmission);
 
             const updateDoc = {
                 $set: {
