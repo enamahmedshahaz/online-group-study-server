@@ -131,7 +131,7 @@ async function run() {
             res.send(result);
         });
 
-        //API to view assignment submissions based on query
+        //API to view assignment submissions based on query (find items of other users )
         app.get("/submissions", async (req, res) => {
 
             let query = {};
@@ -148,6 +148,18 @@ async function run() {
 
             const result = await submissionCollection.find(query).toArray();
 
+            res.send(result);
+        });
+
+
+        //API to view my assignment submissions (find items of only logged in users )
+        app.get("/my-submissions", async (req, res) => {
+            let query = {};
+            if (req.query?.email) {
+                // only find assignments submitted by logged in user
+                query = { submitted_by:  req.query.email }
+            }
+            const result = await submissionCollection.find(query).toArray();
             res.send(result);
         });
 
